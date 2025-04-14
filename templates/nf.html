@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>nf</title>
+    <style>
+        body, h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            /* background-color: #f4f4f4; */
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+		.container a {
+		    text-decoration: none;
+		    display: block;
+		    color: inherit;
+		}
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #e8491d 3px solid;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header .highlight{
+            color: #e8491d;
+            font-weight: bold;
+        }
+		.search-box {
+		    float: right;
+		    margin-top: 20px;
+		}
+
+		.search-box form {
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+
+		.search-box input[type="text"] {
+		    padding: 5px;
+		    border: 1px solid #cccccc;
+		    border-radius: 4px 0 0 4px;
+		    outline: none;
+		}
+
+		.search-box button {
+		    padding: 5px 15px;
+		    background: #e8491d;
+		    color: white;
+		    border: none;
+		    border-radius: 0 4px 4px 0;
+		    cursor: pointer;
+		}
+
+		.search-box button:hover {
+		    background:#c13d18;
+		}
+        .banner {
+min-height: 160px;
+            padding: 80px 0;
+            color: #ffffff;
+            background: url('static/img/bg02.jpg')  center center;
+            background-size: cover;
+        }
+        .banner h1 {
+            font-size: 55px;
+            font-weight: bold;
+        }
+        .banner p {
+            font-size: 20px;
+        }
+        .main {
+            margin: 50px;
+            color: blue;
+        }
+
+
+		footer {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			background: #333;
+			color: #fff;
+			text-align: center;
+			padding: 10px;
+		}
+    </style>
+
+</head>
+<body>
+<header>
+    <div class="container">
+        <div id="branding">
+            <a href="{{ url_for('index') }}"><h1><span class="highlight">香山德译</span></h1></a>
+        </div>
+        <div class="search-box">
+            <form action="{{ url_for('search') }}" method="get">
+                <input type="text" name="title" placeholder="请输入诗歌名">
+                <button type="submit">搜索</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<section class="banner">
+    <div class="container">
+<!--        <h1>欢迎来到我的网站</h1>-->
+<!--        <p>这里是一些介绍网站内容的文本。</p>-->
+    </div>
+</section>
+
+<div class="main">
+	<p>没有找到诗歌，请重新搜索!</p>
+</div>
+
+<footer>
+    <!-- 页脚内容 -->
+    <p>版权所有 &copy; 2024 网站名称</p>
+</footer>
+
+</body>
+</html>

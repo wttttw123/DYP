@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<title>详细信息</title>
+	<style>
+		body, h1, h2, h3, p {
+		    margin: 0;
+		    padding: 0;
+		}
+		body {
+		    font-family: 'Arial', sans-serif;
+		    line-height: 1.6;
+		    /* background-color: #f4f4f4; */
+		}
+		.container {
+		    width: 80%;
+		    margin: auto;
+		    overflow: hidden;
+		}
+		.container a {
+		    text-decoration: none;
+		    display: block;
+		    color: inherit;
+		}
+		header {
+		    background: #333;
+		    color: #fff;
+		    padding-top: 30px;
+		    min-height: 70px;
+		    border-bottom: #e8491d 3px solid;
+		}
+		header #branding {
+		    float: left;
+		}
+		header #branding h1 {
+		    margin: 0;
+		}
+		header .highlight{
+		    color: #e8491d;
+		    font-weight: bold;
+		}
+		.main {
+			flex: 1;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.main1 {
+			width: 85%;
+			height: 500px; /* 初始高度设置为500px */
+			margin: 30px auto;
+			border: 1px solid #cccccc;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			padding: 20px;
+			box-sizing: border-box;
+			overflow: auto; /* 当内容超出时，允许自动扩展 */
+			word-wrap: break-word; /* 确保长单词或URL可以正确换行 */
+		}
+		footer {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			background: #333;
+			color: #fff;
+			text-align: center;
+			padding: 10px;
+		}
+	</style>
+
+	</head>
+	<body>
+		<header>
+		    <div class="container">
+		        <div id="branding">
+		            <a href="{{ url_for('index') }}"><h1><span class="highlight">香山德译</span></h1></a>
+		        </div>
+		    </div>
+		</header>
+        <div class="main">
+
+			<article class="main1">
+				<h2>{{ translator_info[3] }}</h2>
+				<p>{{ translator_info[4] }}</p>
+			</article>
+
+        </div>
+
+		<footer>
+		    <p>版权所有 &copy; 2024 网站名称</p>
+		</footer>
+	</body>
+</html>

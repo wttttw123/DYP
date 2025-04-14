@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>德译版本</title>
+    <style>
+        body, h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            /* background-color: #f4f4f4; */
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .container a {
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #e8491d 3px solid;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header .highlight{
+            color: #e8491d;
+            font-weight: bold;
+        }
+
+        .main {
+            padding: 20px;
+            background: white;
+            margin-bottom: 35px;
+        }
+        .main .container a {
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        .main .content {
+            width: 85%;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 阴影效果 */
+            display: block;
+        }
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+
+</head>
+<body>
+<header>
+    <div class="container">
+        <div id="branding">
+            <a href="{{ url_for('index') }}"><h1><span class="highlight">香山德译</span></h1></a>
+        </div>
+    </div>
+</header>
+
+<div class="main">
+    <div class="container">
+        <article class="content">
+            <!-- 显示诗的标题和内容 -->
+            <h3>{{ poem[1] }} | {{ poem[2] }}</h3>
+            <p>{{ poem[3] }}</p>
+        </article>
+    </div>
+
+    {% if translations %}
+        <!-- 循环显示所有翻译版本 -->
+        {% for translation in translations %}
+        <div class="container">
+            <article class="content">
+                <h2><a href="{{ url_for('detail', translator=translation[3]) }}">{{ '德译版本' ~ (loop.index0 + 1) }} | {{ translation[3] }}</a></h2>
+                <!-- 使用索引访问翻译，并将其包装在一个链接中 -->
+                <p>{{ translation[2] }}</p>
+            </article>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>没有找到译文。</p>
+    {% endif %}
+</div>
+
+<footer>
+    <p>版权所有 &copy; 2024 网站名称</p>
+</footer>
+</body>
+</html>

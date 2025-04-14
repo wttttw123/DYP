@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+		<title>待考证</title>
+		<style>
+			body,
+			h1,
+			h2,
+			h3,
+			p {
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				font-family: 'Arial', sans-serif;
+				line-height: 1.6;
+				/* background-color: #f4f4f4; */
+			}
+
+			.container {
+				width: 80%;
+				margin: auto;
+				overflow: hidden;
+				/* position: relative; /* 新增，以便相对定位 dai */
+				*/
+			}
+
+			.container a {
+				text-decoration: none;
+				display: block;
+				color: inherit;
+
+			}
+
+			header {
+				background: #333;
+				color: #fff;
+				padding-top: 30px;
+				min-height: 70px;
+				border-bottom: #e8491d 3px solid;
+			}
+
+			header #branding {
+				float: left;
+			}
+
+			header #branding h1 {
+				margin: 0;
+			}
+
+			header .highlight {
+				color: #e8491d;
+				font-weight: bold;
+			}
+
+			.search-box {
+				float: right;
+				margin-top: 10px; //
+
+			}
+
+			.search-box form {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.search-box input[type="text"] {
+				padding: 5px;
+				border: 1px solid #cccccc;
+				border-radius: 4px 0 0 4px;
+				outline: none;
+			}
+
+			.search-box button {
+				padding: 5px 15px;
+				background: #e8491d;
+				color: white;
+				border: none;
+				border-radius: 0 4px 4px 0;
+				cursor: pointer;
+			}
+
+			.search-box button:hover {
+				background: #c13d18;
+			}
+		.banner {
+min-height: 160px;
+            padding: 80px 0;
+            color: #ffffff;
+            background: url('static/img/bg02.jpg')  center center;
+            background-size: cover;
+        }
+        .banner h1 {
+            font-size: 55px;
+            font-weight: bold;
+        }
+        .banner p {
+            font-size: 20px;
+        }
+      .main {
+          padding: 20px;
+          background: white;
+          margin-bottom: 35px;
+      }
+      .main .container a {
+          text-decoration: none;
+          color: inherit;
+      }
+      .main .content {
+          width: 85%;
+          border: 1px solid #cccccc;
+          border-radius: 8px;
+          padding: 20px;
+          margin: 20px auto;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          display: block;
+      }
+
+			footer {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				background: #333;
+				color: #fff;
+				text-align: center;
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<div class="container">
+				<div id="branding">
+					<a href="{{ url_for('index') }}"><h1><span class="highlight">香山德译</span></h1></a>
+				</div>
+<!--				<div class="search-box">-->
+<!--					<form action="/search" method="get">-->
+<!--						<input type="text" name="query" placeholder="请输入中文诗名">-->
+<!--						<button type="submit">搜索</button>-->
+<!--					</form>-->
+<!--				</div>-->
+			</div>
+		</header>
+		<section class="banner">
+			<div class="container">
+<!--				<h1>欢迎来到我的网站</h1>-->
+<!--				<p>这里是一些介绍网站内容的文本。</p>-->
+			</div>
+		</section>
+		<section class="main">
+			<div class="container">
+				{% if dais %}
+					{% for dai in dais %}
+					<div class="dai-entry">
+						<article class="content">
+							<h3>{{ dai[1] }} | {{ dai[2] }}</h3>
+<!--							<h3><a href="{{ url_for('dai', did=dai[0],authorship=dai[1]) }}">{{ dai[1] }} | {{ dai[2] }}</a></h3>-->
+							<p>{{ dai[3] }}</p>
+						</article>
+					</div>
+					{% endfor %}
+				{% else %}
+					<p>没有找到诗歌。</p>
+				{% endif %}
+			</div>
+		</section>
+
+
+
+		<footer>
+			<p>版权所有 &copy; 2024 网站名称</p>
+		</footer>
+	</body>
+</html>
