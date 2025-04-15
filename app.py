@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 # 初始化Supabase
 supabase = create_client(
-    os.getenv("SUPABASE_URL"),
-    os.getenv("SUPABASE_KEY")
+    os.getenv("https://rewgeacnvdxwyvghqaqg.supabase.co"),
+    os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJld2dlYWNudmR4d3l2Z2hxYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2NDM2OTksImV4cCI6MjA2MDIxOTY5OX0.v_EU0QoJWHvGUaM7EhqBkBpuZ-xil_YtbIkYfjjf08U")
 )
 
 
