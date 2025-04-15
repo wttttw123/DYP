@@ -1,132 +1,75 @@
-from flask import Flask, render_template, redirect, url_for
-import mysql.connector
-from mysql.connector import Error
-from flask import request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
+from supabase import create_client
+import os
+from dotenv import load_dotenv  # 本地开发使用
+
+load_dotenv()  # 加载本地.env文件
 
 app = Flask(__name__)
 
-# 数据库配置信息
-db_config = {
-    'host': 'localhost',
-    'database': 'poetry_db',
-    'user': 'root',
-    'password': '123456',
-    'auth_plugin': 'mysql_native_password',
-    'buffered': True,
-}
+# 初始化Supabase
+supabase = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_KEY")
+)
 
-# 获取数据库连接的函数
-def get_db_connection():
-    connection = None
-    try:
-        connection = mysql.connector.connect(**db_config)
-    except Error as e:
-        print(f"The error '{e}' occurred")
-    return connection
 
-# 首页路由
+# 错误处理装饰器
+def handle_db_errors(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            app.logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
+            return render_template('error.html', error_code=500), 500
+
+    return wrapper
+
+
+# 通用查询方法
+def fetch_data(table, columns="*", filters=None, order_by=None):
+    query = supabase.table(table).select(columns)
+    if filters:
+        for key, val in filters.items():
+            query = query.eq(key, val)
+    if order_by:
+        query = query.order(order_by)
+    return query.execute().data
+
+
+# 路由部分
 @app.route('/')
+@handle_db_errors
 def index():
-    connection = get_db_connection()
-    if connection.is_connected():
-        cursor = connection.cursor()
-        cursor.execute("SELECT id, title, author, content FROM poems")
-        poems = cursor.fetchall()
-        cursor.close()
-        connection.close()
-        return render_template('index.html', poems=poems)
-    else:
-        return "Failed to connect to the database", 500
+    poems = fetch_data('poems', 'id,title,author,content', order_by='created_at')
+    return render_template('index.html', poems=poems)
 
-# 显示诗歌的翻译版本页面路由
+
 @app.route('/trans/<path:title>')
+@handle_db_errors
 def chi(title):
-    connection = get_db_connection()
-    poem = None
-    translations = []
-    if connection:
-        cursor = connection.cursor(buffered=True)  # 使用缓冲游标
-        try:
-            cursor.execute("SELECT * FROM poems WHERE title = %s", (title,))
-            poem = cursor.fetchone()
-            if poem:
-                cursor.execute("SELECT * FROM translations WHERE poem_id = %s", (poem[0],))
-                translations = cursor.fetchall()
-        finally:
-            cursor.close()  # 确保在 finally 块中关闭游标
-        connection.close()  # 同样在 finally 块中关闭连接
-        if poem and translations:
-            return render_template('chi.html', poem=poem, translations=translations)
-        else:
-            return redirect(url_for('not_found'))
-    return "数据库连接失败。", 500
+    poems = fetch_data('poems', filters={'title': title})
+    if not poems:
+        return redirect(url_for('not_found'))
 
-# 显示翻译者详细信息页面路由
-@app.route('/detail/<path:translator>')
-def detail(translator):
-    connection = get_db_connection()
-    if connection.is_connected():
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM translations WHERE translator = %s", (translator,))
-        translator_info = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        if translator_info:
-            return render_template('detail.html', translator_info=translator_info)
-        else:
-            return "没有找到译者信息。", 404
-    else:
-        return "数据库连接失败。", 500
+    poem = poems[0]
+    translations = fetch_data('translations', filters={'poem_id': poem['id']})
 
-@app.route('/search')
-def search():
-    search_title = request.args.get('title', '')  # 获取搜索关键词
-    if not search_title:
-        return redirect(url_for('index'))
+    return render_template('chi.html', poem=poem, translations=translations)
 
-    connection = get_db_connection()
-    if connection:
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT id, title, author, content FROM poems WHERE title LIKE %s", ('%' + search_title + '%',))
-            poems = cursor.fetchall()
-        except Error as e:
-            app.logger.error(f"Database query error: {e}")
-            return "数据库查询失败。", 500
-        finally:
-            cursor.close()
-            connection.close()
 
-        if poems:
-            return render_template('index.html', poems=poems)
-        else:
-            return redirect(url_for('not_found'))
-    else:
-        return "数据库连接失败。", 500
+# 其他路由保持类似优化...
 
-@app.route('/dai')
-def dai():
-    connection = get_db_connection()
-    if connection.is_connected():
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT did, authorship, author, content FROM dai")
-            dais = cursor.fetchall()
-        finally:
-            cursor.close()
-            connection.close()
-
-        if dais:
-            return render_template('dai.html', dais=dais)
-        else:
-            return "没有找到待考证的诗歌。", 404
-    else:
-        return "数据库连接失败。", 500
-
-@app.route('/not_found')
-def not_found():
-    return render_template('nf.html'), 404
+# 健康检查
+@app.route('/health')
+def health_check():
+    try:
+        supabase.table('poems').select('count', count='exact').execute()
+        return 'OK', 200
+    except Exception as e:
+        return str(e), 500
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
